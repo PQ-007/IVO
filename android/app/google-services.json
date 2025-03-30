@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "132647805775",
+    "project_id": "mp9-alpha",
+    "storage_bucket": "mp9-alpha.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132647805775:android:13020711849a2ddccbdb3a",
+        "android_client_info": {
+          "package_name": "com.example.test_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132647805775-men0hbp4p91cqbje0pj73l8m3ik5q371.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkFv1b0xc0rv48MHx6ccqNKbmAsxNmt14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132647805775-men0hbp4p91cqbje0pj73l8m3ik5q371.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
