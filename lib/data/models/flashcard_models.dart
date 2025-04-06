@@ -1,27 +1,47 @@
-class Flashcard {
-  final int? id;
-  final String front;
-  final String back;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  Flashcard({this.id, required this.front, required this.back, requiredthis});
+class JapaneseWord {
+  String id;
+  String newWordByKanji;
+  String newWordPronounsation;
+  String translation;
+  String exampleSentence;
+  String exampleSentenceTranslation;
+  Timestamp createdAt;
 
-  // Convert a Flashcard to a Map (for SQLite)
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'front': {
-        'question': front,
-      },
-      'back': back,
-    };
+  JapaneseWord({
+    required this.id,
+    required this.newWordByKanji,
+    required this.newWordPronounsation,
+    required this.translation,
+    required this.exampleSentence,
+    required this.exampleSentenceTranslation,
+    required this.createdAt,
+  });
+
+  // Convert Firestore document to JapaneseWord object
+  factory JapaneseWord.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return JapaneseWord(
+      id: doc.id,
+      newWordByKanji: data['newWordByKanji'] ?? '',
+      newWordPronounsation: data['newWordPronounsation'] ?? '',
+      translation: data['translation'] ?? '',
+      exampleSentence: data['exampleSentence'] ?? '',
+      exampleSentenceTranslation: data['exampleSentenceTranslation'] ?? '',
+      createdAt: data['createdAt'] ?? Timestamp.now(),
+    );
   }
 
-  // Create a Flashcard from a Map (for SQLite)
-  factory Flashcard.fromMap(Map<String, dynamic> map) {
-    return Flashcard(
-      id: map['id'],
-      front: map['front'],
-      back: map['back'],
-    );
+  // Convert JapaneseWord object to Firestore map
+  Map<String, dynamic> toMap() {
+    return {
+      'newWordByKanji': newWordByKanji,
+      'newWordPronounsation': newWordPronounsation,
+      'translation': translation,
+      'exampleSentence': exampleSentence,
+      'exampleSentenceTranslation': exampleSentenceTranslation,
+      'createdAt': createdAt,
+    };
   }
 }
