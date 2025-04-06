@@ -4,12 +4,11 @@ import 'package:test_project/data/sqlite_db_helper.dart';
 class CardMakingPage extends StatefulWidget {
   final String deckName;
   final String description;
-  final String category;
+
   const CardMakingPage({
     super.key,
     required this.deckName,
     required this.description,
-    required this.category,
   });
 
   @override
