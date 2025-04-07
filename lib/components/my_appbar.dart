@@ -13,7 +13,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(titleText),
+      title: Text(
+        titleText,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
       actions: [
         // Dark mode toggle button
         IconButton(
