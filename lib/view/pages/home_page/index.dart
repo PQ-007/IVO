@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/components/my_appbar.dart';
+import 'package:test_project/components/my_searchbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,24 +14,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(titleText: "Home"),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Home Page"),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     // builder: (context) => const CardMakingPage(),
-                //   ),
-                // );
-              },
-              child: const Text("Create Flashcards"),
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MySearchbar(hintText: "Folder, Deck, PLaylist..."),
+          const SizedBox(height: 20),
+          const Text(
+            "No results found",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+        ],
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:test_project/components/my_card.dart';
 import 'package:test_project/view/pages/add_page/create_deck/add_deck_page.dart';
 import 'package:test_project/view/pages/add_page/create_deck/generate_deck_page.dart';
-import 'package:test_project/view/pages/card_making_page.dart';
 
 class CreateDeckPage extends StatefulWidget {
   const CreateDeckPage({super.key});
@@ -14,38 +13,12 @@ class CreateDeckPage extends StatefulWidget {
 class _CreateDeckPageState extends State<CreateDeckPage> {
   final TextEditingController _deckNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String _selectedCategory = 'New word';
 
   @override
   void dispose() {
     _deckNameController.dispose();
     _descriptionController.dispose();
     super.dispose();
-  }
-
-  void _createDeck() {
-    String deckName = _deckNameController.text.trim();
-    String description = _descriptionController.text.trim();
-
-    if (deckName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Deck name cannot be empty')),
-      );
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Deck "$deckName" created in $_selectedCategory')),
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (context) =>
-                CardMakingPage(deckName: deckName, description: description),
-      ),
-    );
   }
 
   @override
