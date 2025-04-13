@@ -23,7 +23,7 @@ class _CreateDeckPageState extends State<CreateDeckPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Deck")),
+      appBar: AppBar(title: Text("Create Deckx")),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
