@@ -124,10 +124,7 @@ class SettingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 16, color: Colors.white),
-      ),
+      title: Text(title, style: const TextStyle(fontSize: 16)),
       trailing:
           showArrow
               ? const Icon(

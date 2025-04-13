@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/components/my_appbar.dart';
+import 'package:test_project/components/my_recent.dart';
+import 'package:test_project/components/my_searchbar.dart';
+import 'package:test_project/components/my_streakcard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,27 +11,37 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+void onSearch(String query) {
+  print("Searching for: $query");
+}
+
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(titleText: "Home"),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Home Page"),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     // builder: (context) => const CardMakingPage(),
-                //   ),
-                // );
-              },
-              child: const Text("Create Flashcards"),
+            MySearchbar(
+              hintText: "Flashcard, Folder, Deck, Playlist...",
+              onSearch: onSearch,
             ),
+            const SizedBox(height: 20),
+            MyStreakCard(
+              streakWeeks: 2, // Hardcoded for now
+              activeDays: [
+                true,
+                true,
+                false,
+                false,
+                false,
+                false,
+                false,
+              ], // S, M active
+            ),
+            const SizedBox(height: 20),
+            MyRecent(recentItems: ['a', 'ok', 'l'], type: 'flashcard'),
           ],
         ),
       ),

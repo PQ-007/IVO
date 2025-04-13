@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/data/notifiers.dart';
-import 'package:test_project/view/pages/settings_page.dart'; // Import your SettingsPage
+import 'package:test_project/components/settings_page.dart'; // Import your SettingsPage
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleText; // Add a field for the title
 
-  const MyAppBar({super.key, required this.titleText}); // Constructor with titleText
+  const MyAppBar({
+    super.key,
+    required this.titleText,
+  }); // Constructor with titleText
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(titleText), // Use titleText here
+      title: Text(
+        titleText,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
       actions: [
         // Dark mode toggle button
         IconButton(
@@ -32,9 +39,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             // Navigate to the settings page
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => SettingsPage(),
-              ),
+              MaterialPageRoute(builder: (context) => SettingsPage()),
             );
           },
         ),
