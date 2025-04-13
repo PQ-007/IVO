@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/components/my_card.dart';
-import 'package:test_project/view/pages/add_page/create_deck/add_deck_page.dart';
+import 'package:test_project/view/pages/add_page/create_deck/add_deck/index.dart';
 import 'package:test_project/view/pages/add_page/create_deck/generate_deck_page.dart';
 
 class CreateDeckPage extends StatefulWidget {
@@ -12,12 +12,11 @@ class CreateDeckPage extends StatefulWidget {
 
 class _CreateDeckPageState extends State<CreateDeckPage> {
   final TextEditingController _deckNameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
+  String selectedValue = "Standart";
   @override
   void dispose() {
     _deckNameController.dispose();
-    _descriptionController.dispose();
+
     super.dispose();
   }
 
@@ -40,25 +39,42 @@ class _CreateDeckPageState extends State<CreateDeckPage> {
               ),
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(
-                  gapPadding: 10,
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+
+            Container(
+              padding: EdgeInsets.only(left: 15, right: 5),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: const Text("Select the template of deck"),
+                  value: selectedValue,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedValue = newValue!;
+                    });
+                  },
+                  items:
+                      [
+                            'Kanji',
+                            'New word',
+                            'Theoretical',
+                            'Technical',
+                            'Standart',
+                          ]
+                          .map(
+                            (item) => DropdownMenuItem(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Text(
-              "Our flashcard can make japanese new words right now",
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               spacing: 10,
@@ -86,7 +102,13 @@ class _CreateDeckPageState extends State<CreateDeckPage> {
                     // _createDeck();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => AddDeckPage()),
+                      MaterialPageRoute(
+                        builder:
+                            (_) => AddDeckPage(
+                              deckName: _deckNameController.text,
+                              deckType: selectedValue,
+                            ),
+                      ),
                     );
                   },
                 ),
