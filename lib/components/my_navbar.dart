@@ -48,6 +48,13 @@ class MyNavbar extends StatelessWidget {
                 'Select to Create',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+              ListTile(
+                title: Text('Create Deck'),
+                onTap: () {
+                  Navigator.pop(context);
+                  selectedAddPageNotifier.value = 'Deck';
+                },
+              ),
 
               ListTile(
                 title: Text('Create Folder'),
@@ -56,13 +63,7 @@ class MyNavbar extends StatelessWidget {
                   selectedAddPageNotifier.value = 'Folder';
                 },
               ),
-              ListTile(
-                title: Text('Create Deck'),
-                onTap: () {
-                  Navigator.pop(context);
-                  selectedAddPageNotifier.value = 'Deck';
-                },
-              ),
+
               ListTile(
                 title: Text('Create Playlist'),
                 onTap: () {

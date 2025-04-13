@@ -135,7 +135,6 @@ class _LoginPageState extends State<LoginPage> {
                     ? const CircularProgressIndicator()
                     : ElevatedButton(
                       onPressed: _isGoogleLoading ? null : _signInWithEmail,
-                      child: const Text("Login"),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 40,
@@ -146,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         textStyle: const TextStyle(fontSize: 16),
                       ),
+                      child: const Text("Login"),
                     ),
                 const SizedBox(height: 20),
 
