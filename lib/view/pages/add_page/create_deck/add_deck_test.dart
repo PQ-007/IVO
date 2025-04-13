@@ -3,9 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../data/models/flashcard_models.dart';
 
-class AddDeckPage extends StatelessWidget {
+class AddDeckTest extends StatelessWidget {
   final CollectionReference wordsCollection = FirebaseFirestore.instance
       .collection('japaneseWords');
+
+  AddDeckTest({super.key});
 
   @override
   Widget build(BuildContext context) {

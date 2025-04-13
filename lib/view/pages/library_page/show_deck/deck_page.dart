@@ -4,8 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../data/models/flashcard_models.dart';
 
 class JapaneseWordsDeckScreen extends StatelessWidget {
-  final CollectionReference wordsCollection = FirebaseFirestore.instance
-      .collection('japaneseWords');
+  late final CollectionReference wordsCollection;
+
+  JapaneseWordsDeckScreen({super.key}) {
+    wordsCollection = FirebaseFirestore.instance.collection('japaneseWords');
+  }
 
   @override
   Widget build(BuildContext context) {

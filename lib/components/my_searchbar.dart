@@ -53,15 +53,23 @@ class _MySearchbarState extends State<MySearchbar> {
             contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
             hintText: widget.hintText,
             hintStyle: TextStyle(color: Colors.grey[500]),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Theme.of(context).iconTheme.color,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Icon(
+                Icons.search,
+                color: Theme.of(context).iconTheme.color,
+              ),
             ),
             suffixIcon:
                 _controller.text.isNotEmpty
-                    ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: _clearSearch,
+                    ? Padding(
+                      padding: const EdgeInsets.all(
+                        5.0,
+                      ), // Add padding around the suffix icon
+                      child: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearSearch,
+                      ),
                     )
                     : null,
             border: OutlineInputBorder(
@@ -69,7 +77,10 @@ class _MySearchbarState extends State<MySearchbar> {
               borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor: isDark ? Colors.grey[900] : Colors.grey[100],
+            fillColor:
+                isDark
+                    ? Colors.grey[900]
+                    : const Color.fromARGB(71, 129, 189, 226),
           ),
         ),
       ),
