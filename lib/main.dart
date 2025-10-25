@@ -1,12 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
-import 'package:test_project/data/notifiers.dart';
-import 'package:test_project/firebase_options.dart';
-import 'package:test_project/view/widget_tree.dart';
+import 'package:ivo/data/notifiers.dart';
+import 'package:ivo/view/widget_tree.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 

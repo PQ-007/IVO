@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/components/my_appbar.dart';
-import 'package:test_project/components/my_recent.dart';
-import 'package:test_project/components/my_searchbar.dart';
-import 'package:test_project/components/my_streakcard.dart';
+import 'package:ivo/components/my_appbar.dart';
+import 'package:ivo/components/my_recent.dart';
+import 'package:ivo/components/my_searchbar.dart';
+import 'package:ivo/components/my_streakcard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

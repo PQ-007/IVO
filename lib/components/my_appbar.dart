@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/data/notifiers.dart';
-import 'package:test_project/components/settings_page.dart'; // Import your SettingsPage
+import 'package:ivo/data/notifiers.dart';
+import 'package:ivo/components/settings_page.dart'; // Import your SettingsPage
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleText; // Add a field for the title

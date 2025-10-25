@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/data/sqlite_db_helper.dart';
+import 'package:ivo/data/sqlite_db_helper.dart';
 
 class CardMakingPage extends StatefulWidget {
   final String deckName;
