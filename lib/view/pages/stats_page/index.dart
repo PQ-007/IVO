@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_project/components/my_appbar.dart';
+import 'package:ivo/components/my_appbar.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
