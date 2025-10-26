@@ -5,13 +5,13 @@ import 'package:ivo/view/pages/article-page/index.dart';
 import 'package:ivo/view/pages/dictionary-page/index.dart';
 import 'package:ivo/view/pages/home-page/index.dart';
 import 'package:ivo/view/pages/library-page/index.dart';
-import 'package:ivo/view/pages/tool-page/index.dart';
+import 'package:ivo/view/pages/pvp-page/index.dart';
 
 List<Widget> pages = [
   HomePage(),
-  DictionaryPage(),
-  ToolPage(),
   ArticlePage(),
+  DictionaryPage(),
+  PvPPage(),
   LibraryPage(),
 ];
 
