@@ -1,10 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:ivo/data/notifiers.dart';
+import 'package:forui/theme.dart';
 import 'package:ivo/view/widget_tree.dart';
+import 'package:ivo/data/notifiers.dart';
+import 'theme/dark-theme.dart';
+import 'theme/light-theme.dart';
 
 void main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,18 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    // Wrap with ValueListenableBuilder to listen for theme changes
+    return ValueListenableBuilder<bool>(
       valueListenable: isDarkThemeNotifier,
-      builder: (context, isDarkMode, child) {
+      builder: (context, isDark, _) {
+        // Select theme based on isDark value
+        final theme = isDark ? blueDark : blueLight;
+
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: WidgetTree(),
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue,
-              brightness: isDarkMode ? Brightness.dark : Brightness.light,
-            ),
-          ),
+          builder: (_, child) => FAnimatedTheme(data: theme, child: child!),
+          home: const WidgetTree(),
+          theme: theme.toApproximateMaterialTheme(),
         );
       },
     );
