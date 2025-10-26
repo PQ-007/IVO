@@ -11,7 +11,7 @@ class LibraryPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [Text("Library Page")],
+          children: [Text("Library Page")],
         ),
       ),
     );

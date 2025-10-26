@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:ivo/components/my_appbar.dart';
 
-class StatsPage extends StatelessWidget {
-  const StatsPage({super.key});
+class DictionaryPage extends StatelessWidget {
+  const DictionaryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(titleText: "Stats"),
+      appBar: MyAppBar(titleText: "Толь бичиг"),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [Text("Stats Page")],
+          children: const [Text("Dictionary Page")],
         ),
       ),
     );
