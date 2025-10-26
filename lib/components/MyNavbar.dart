@@ -27,7 +27,7 @@ class MyNavbar extends StatelessWidget {
           children: [
             FBottomNavigationBarItem(
               icon: const Icon(FIcons.house),
-              label: const Text("Нүүр"),
+              label: const Text('Нүүр'),
             ),
             FBottomNavigationBarItem(
               icon: const Icon(FIcons.search),
@@ -110,7 +110,6 @@ void _showAddSelectionBottomSheet(BuildContext context) {
           ],
         ),
       );
-      ;
     },
   );
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/my_appbar.dart';
+import 'package:ivo/components/MyAppbarr.dart';
 import 'package:ivo/components/my_recent.dart';
 import 'package:ivo/components/my_searchbar.dart';
 
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(titleText: "Home"),
+      appBar: MyAppBar(titleText: "Нүүр"),
       body: SingleChildScrollView(
         child: Column(
           children: [
