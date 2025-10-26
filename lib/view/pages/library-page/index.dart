@@ -7,21 +7,22 @@ class LibraryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(titleText: "Library"),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          FTabs(
-            initialIndex: 0,
-            onPress: (index) {},
-            children: const [
-              FTabEntry(label: Text('Folders'), child: Placeholder()),
-              FTabEntry(label: Text('Decks'), child: Placeholder()),
-              FTabEntry(label: Text('Playlist'), child: Placeholder()),
-            ],
-          ),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            FTabs(
+              initialIndex: 0,
+              onPress: (index) {},
+              children: const [
+                FTabEntry(label: Text('Нийтлэл'), child: Placeholder()),
+                FTabEntry(label: Text('Флаш карт'), child: Placeholder()),
+                FTabEntry(label: Text('Аудио карт'), child: Placeholder()),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

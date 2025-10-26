@@ -30,14 +30,13 @@ class MyNavbar extends StatelessWidget {
               label: const Text('Нүүр'),
             ),
             FBottomNavigationBarItem(
-              icon: const Icon(FIcons.search),
-              label: const Text('Толь бичиг'),
+              icon: const Icon(FIcons.telescope),
+              label: const Text('Нийтлэл'),
             ),
             FButton.icon(
               style: FButtonStyle.ghost(),
               onPress: () {
                 selectedPageNotifier.value = 2;
-                _showAddSelectionBottomSheet(context);
               },
               child: Icon(
                 FIcons.blocks,
@@ -45,9 +44,10 @@ class MyNavbar extends StatelessWidget {
                 color: Theme.of(context).iconTheme.color,
               ),
             ),
+
             FBottomNavigationBarItem(
-              icon: const Icon(FIcons.telescope),
-              label: const Text('Нийтлэл'),
+              icon: const Icon(FIcons.swords),
+              label: const Text('Халз ханз'),
             ),
             FBottomNavigationBarItem(
               icon: const Icon(FIcons.libraryBig),
