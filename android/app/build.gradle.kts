@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.example.test_project"
-    compileSdk = 35
+    compileSdk = 36
 
     ndkVersion = "29.0.13113456" 
 
@@ -26,8 +26,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.test_project"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
     }
