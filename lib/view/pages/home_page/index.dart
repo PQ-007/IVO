@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ivo/components/my_appbar.dart';
 import 'package:ivo/components/my_recent.dart';
 import 'package:ivo/components/my_searchbar.dart';
-import 'package:ivo/components/my_streakcard.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,18 +28,7 @@ class _HomePageState extends State<HomePage> {
               onSearch: onSearch,
             ),
             const SizedBox(height: 20),
-            MyStreakCard(
-              streakWeeks: 2, // Hardcoded for now
-              activeDays: [
-                true,
-                true,
-                false,
-                false,
-                false,
-                false,
-                false,
-              ], // S, M active
-            ),
+            
             const SizedBox(height: 20),
             MyRecent(recentItems: ['a', 'ok', 'l'], type: 'flashcard'),
           ],
