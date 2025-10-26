@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/my_appbar.dart';
+import 'package:ivo/components/MyAppbarr.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

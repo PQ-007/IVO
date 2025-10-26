@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/theme.dart';
 import 'package:ivo/view/widget_tree.dart';
 import 'package:ivo/data/notifiers.dart';
-import 'theme/dark-theme.dart';
-import 'theme/light-theme.dart';
+import 'theme/dark_theme.dart';
+import 'theme/light_theme.dart';
 
 void main() async {
   runApp(const MyApp());
