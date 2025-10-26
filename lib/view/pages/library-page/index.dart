@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/my_appbar.dart';
+import 'package:forui/forui.dart';
+import 'package:ivo/components/MyAppbarr.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: MyAppBar(titleText: "Library"),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("Library Page")],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          FTabs(
+            initialIndex: 0,
+            onPress: (index) {},
+            children: const [
+              FTabEntry(label: Text('Folders'), child: Placeholder()),
+              FTabEntry(label: Text('Decks'), child: Placeholder()),
+              FTabEntry(label: Text('Playlist'), child: Placeholder()),
+            ],
+          ),
+        ],
       ),
     );
   }
