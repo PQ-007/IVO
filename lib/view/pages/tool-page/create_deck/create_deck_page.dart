@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ivo/components/my_card.dart';
-import 'package:ivo/view/pages/add_page/create_deck/add_deck/index.dart';
-import 'package:ivo/view/pages/add_page/create_deck/generate_deck_page.dart';
+import 'package:ivo/view/pages/tool-page/create_deck/add_deck/index.dart';
+import 'package:ivo/view/pages/tool-page/create_deck/generate_deck_page.dart';
 
 class CreateDeckPage extends StatefulWidget {
   const CreateDeckPage({super.key});
