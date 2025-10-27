@@ -4,12 +4,12 @@ import 'package:ivo/components/dictionary/MyDrawingPad.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;
-  final VoidCallback onDrawingSearch;
+  
 
   const SearchBarSection({
     super.key,
     required this.onSearch,
-    required this.onDrawingSearch,
+    
   });
 
   @override
@@ -58,7 +58,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
           if (_selectedTab == 'draw')
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DrawingPad(onSearch: widget.onDrawingSearch),
+              child: DrawingPad(),
             ),
         ],
       ),

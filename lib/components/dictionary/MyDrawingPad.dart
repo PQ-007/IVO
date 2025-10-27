@@ -1,10 +1,9 @@
 // File: lib/components/dictionary/MyDrawingPad.dart
 import 'package:flutter/material.dart';
+import 'package:ivo/components/dictionary/MyKanjiRecognizer.dart';
 
 class DrawingPad extends StatefulWidget {
-  final VoidCallback onSearch;
-
-  const DrawingPad({super.key, required this.onSearch});
+  const DrawingPad({super.key});
 
   @override
   State<DrawingPad> createState() => _DrawingPadState();
@@ -14,6 +13,7 @@ class _DrawingPadState extends State<DrawingPad> {
   List<Offset?> _drawingPoints = [];
   bool _showGrid = true;
   int _selectedKanjiIndex = 0;
+  bool _isProcessing = false;
 
   final List<Map<String, String>> _sampleKanji = [
     {'kanji': '日', 'meaning': 'sun, day'},
@@ -27,6 +27,166 @@ class _DrawingPadState extends State<DrawingPad> {
     {'kanji': '山', 'meaning': 'mountain'},
     {'kanji': '川', 'meaning': 'river'},
   ];
+
+  void _onSearch() async {
+    if (_drawingPoints.isEmpty) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final recognizer = MyKanjiRecognizer();
+      await recognizer.loadModel();
+
+      final grayImage = await convertDrawingToGrayscaleImage(_drawingPoints, 64);
+      final result = recognizer.predict(grayImage);
+
+      recognizer.close();
+
+      // Show result dialog
+      if (mounted) {
+        _showResultDialog(result);
+      }
+    } catch (e) {
+      print('Error during recognition: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+
+  void _showResultDialog(Map<String, dynamic> result) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recognition Result'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Main prediction
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      result['kanji'],
+                      style: const TextStyle(
+                        fontSize: 72,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Index: ${result['index']}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Confidence: ${(result['confidence'] * 100).toStringAsFixed(2)}%',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Top 5 Predictions:',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...List.generate(
+                (result['top5'] as List).length,
+                (index) {
+                  final prediction = result['top5'][index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${index + 1}.',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          prediction['kanji'],
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Index: ${prediction['index']}',
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              Text(
+                                '${(prediction['confidence'] * 100).toStringAsFixed(2)}%',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _clearDrawing();
+            },
+            child: const Text('Clear & Try Again'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _clearDrawing() {
     setState(() {
@@ -149,9 +309,9 @@ class _DrawingPadState extends State<DrawingPad> {
                         ),
                         const SizedBox(width: 8),
                         _buildActionButton(
-                          icon: Icons.search,
-                          label: 'Search',
-                          onPressed: widget.onSearch,
+                          icon: _isProcessing ? Icons.hourglass_empty : Icons.search,
+                          label: _isProcessing ? 'Processing...' : 'Search',
+                          onPressed: _isProcessing ? null : _onSearch,
                           isPrimary: true,
                         ),
                       ],
@@ -300,7 +460,7 @@ class _DrawingPadState extends State<DrawingPad> {
   Widget _buildActionButton({
     required IconData icon,
     required String label,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required bool isPrimary,
   }) {
     return ElevatedButton.icon(
