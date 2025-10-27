@@ -55,6 +55,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
     );
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +64,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
         children: [
           SearchBarSection(
             onSearch: _performSearch,
-            onDrawingSearch: _handleDrawingSearch,
+            
           ),
           Expanded(
             child: _isLoading
