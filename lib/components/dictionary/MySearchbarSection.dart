@@ -135,19 +135,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
       onTap: () => setState(() => _selectedTab = value),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          boxShadow:
-              isSelected
-                  ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                  : null,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
