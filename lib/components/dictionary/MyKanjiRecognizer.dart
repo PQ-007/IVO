@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -22,22 +21,25 @@ class MyKanjiRecognizer {
       final labelString = await rootBundle.loadString(
         'assets/ml_models/labels.txt',
       );
-      
+
       print('Raw label file length: ${labelString.length} characters');
-      
+
       // Split by newline and filter out empty lines
-      labels = labelString
-          .split('\n')
-          .map((line) => line.trim())
-          .where((line) => line.isNotEmpty)
-          .toList();
-      
+      labels =
+          labelString
+              .split('\n')
+              .map((line) => line.trim())
+              .where((line) => line.isNotEmpty)
+              .toList();
+
       print('Loaded ${labels.length} labels from labels.txt');
-      
+
       if (labels.length < 6507) {
         print('WARNING: Expected 6507 labels but only found ${labels.length}');
         print('First few labels: ${labels.take(5).join(", ")}');
-        print('Make sure your labels.txt file contains all 6507 kanji characters');
+        print(
+          'Make sure your labels.txt file contains all 6507 kanji characters',
+        );
       } else {
         print('✓ Labels loaded successfully');
         print('First few labels: ${labels.take(5).join(", ")}');
@@ -51,7 +53,7 @@ class MyKanjiRecognizer {
   /// Convert grayscale image to normalized Float32List with correct shape [1, 64, 64, 1]
   List<List<List<List<double>>>> imageToModelInput(img.Image image) {
     final inputSize = image.width;
-    
+
     // Create 4D array: [batch_size, height, width, channels]
     List<List<List<List<double>>>> input = List.generate(
       1, // batch_size
@@ -63,18 +65,18 @@ class MyKanjiRecognizer {
             // Get the Color object from the pixel
             final color = image.getPixel(x, y);
             final gray = color.r.toInt();
-            
-            // Invert: BLACK ink (0) on WHITE background (255) 
+
+            // Invert: BLACK ink (0) on WHITE background (255)
             // becomes WHITE ink (1.0) on BLACK background (0.0)
             final invertedGray = 255 - gray;
-            
+
             // Normalize to [0,1] and return as single-element list (channels dimension)
             return [(invertedGray / 255.0)];
           },
         ),
       ),
     );
-    
+
     return input;
   }
 
@@ -87,11 +89,14 @@ class MyKanjiRecognizer {
     final outputTensor = _interpreter.getOutputTensor(0);
     final outputShape = outputTensor.shape; // Should be [1, 6507]
     final numClasses = outputShape[1];
-    
+
     print('Model expects ${numClasses} output classes');
 
     // Prepare output buffer: 2D array [1, num_classes]
-    final outputBuffer = List.generate(1, (_) => List<double>.filled(numClasses, 0.0));
+    final outputBuffer = List.generate(
+      1,
+      (_) => List<double>.filled(numClasses, 0.0),
+    );
 
     // Run inference
     _interpreter.run(input, outputBuffer);
@@ -113,26 +118,27 @@ class MyKanjiRecognizer {
       topPredictions.add(MapEntry(i, probabilities[i]));
     }
     topPredictions.sort((a, b) => b.value.compareTo(a.value));
-    
+
     print('Top 5 predictions:');
     List<Map<String, dynamic>> top5 = [];
     for (int i = 0; i < 5 && i < topPredictions.length; i++) {
       final idx = topPredictions[i].key;
       final conf = topPredictions[i].value;
       final label = idx < labels.length ? labels[idx] : 'Unknown';
-      print('  ${i + 1}. Index: $idx, Kanji: $label - ${(conf * 100).toStringAsFixed(2)}%');
-      top5.add({
-        'index': idx,
-        'kanji': label,
-        'confidence': conf,
-      });
+      print(
+        '  ${i + 1}. Index: $idx, Kanji: $label - ${(conf * 100).toStringAsFixed(2)}%',
+      );
+      top5.add({'index': idx, 'kanji': label, 'confidence': conf});
     }
 
     // Get the predicted kanji
-    final predictedKanji = predIndex < labels.length ? labels[predIndex] : 'Unknown';
-    
-    print('Final prediction: Index: $predIndex, Kanji: $predictedKanji, Confidence: ${(maxVal * 100).toStringAsFixed(2)}%');
-    
+    final predictedKanji =
+        predIndex < labels.length ? labels[predIndex] : 'Unknown';
+
+    print(
+      'Final prediction: Index: $predIndex, Kanji: $predictedKanji, Confidence: ${(maxVal * 100).toStringAsFixed(2)}%',
+    );
+
     // Return comprehensive result
     return {
       'index': predIndex,
@@ -172,7 +178,9 @@ Future<img.Image> convertDrawingToGrayscaleImage(
   final availableSize = size - (2 * padding);
   final drawingWidth = maxX - minX;
   final drawingHeight = maxY - minY;
-  final scale = (availableSize / (drawingWidth > drawingHeight ? drawingWidth : drawingHeight)).clamp(0.0, 10.0);
+  final scale = (availableSize /
+          (drawingWidth > drawingHeight ? drawingWidth : drawingHeight))
+      .clamp(0.0, 10.0);
 
   // Calculate offset to center the drawing
   final offsetX = (size - (drawingWidth * scale)) / 2 - (minX * scale);
@@ -181,10 +189,11 @@ Future<img.Image> convertDrawingToGrayscaleImage(
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
 
-  final paint = Paint()
-    ..color = Colors.black
-    ..strokeCap = StrokeCap.round
-    ..strokeWidth = 8.0; // Thicker strokes for better recognition
+  final paint =
+      Paint()
+        ..color = Colors.black
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 8.0; // Thicker strokes for better recognition
 
   // White background
   canvas.drawRect(

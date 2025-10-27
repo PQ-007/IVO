@@ -45,16 +45,6 @@ class _DictionaryPageState extends State<DictionaryPage> {
     });
   }
 
-  void _handleDrawingSearch() {
-    // Implement drawing recognition
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Drawing recognition feature coming soon'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
   
   @override
   Widget build(BuildContext context) {

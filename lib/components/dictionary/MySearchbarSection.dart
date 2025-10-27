@@ -4,13 +4,8 @@ import 'package:ivo/components/dictionary/MyDrawingPad.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;
-  
 
-  const SearchBarSection({
-    super.key,
-    required this.onSearch,
-    
-  });
+  const SearchBarSection({super.key, required this.onSearch});
 
   @override
   State<SearchBarSection> createState() => _SearchBarSectionState();
@@ -19,11 +14,24 @@ class SearchBarSection extends StatefulWidget {
 class _SearchBarSectionState extends State<SearchBarSection> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedTab = 'search';
+  List<Map<String, dynamic>> _recognitionResults = [];
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _handleRecognitionResult(Map<String, dynamic> result) {
+    setState(() {
+      _recognitionResults = result['top5'] as List<Map<String, dynamic>>;
+    });
+  }
+
+  void _onKanjiTap(String kanji) {
+    _searchController.text = _searchController.text + kanji;
+    widget.onSearch(kanji);
+    setState(() {});
   }
 
   @override
@@ -54,14 +62,103 @@ class _SearchBarSectionState extends State<SearchBarSection> {
 
           const SizedBox(height: 16),
 
+          // Recognition Results Carousel (shows third type)
+          if (_selectedTab == 'draw' && _recognitionResults.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _buildRecognitionCarousel(),
+            ),
+
+          // Spacing when no results
+          if (_selectedTab == 'draw' && _recognitionResults.isEmpty)
+            const SizedBox(height: 140),
+
           // Content Area (Drawing Pad or Empty Space)
           if (_selectedTab == 'draw')
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DrawingPad(),
+              child: DrawingPad(
+                onRecognitionComplete: _handleRecognitionResult,
+              ),
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRecognitionCarousel() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            'Танилтын үр дүнгүүд:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _recognitionResults.length,
+            itemBuilder: (context, index) {
+              final result = _recognitionResults[index];
+              final confidence = (result['confidence'] * 100).toStringAsFixed(
+                1,
+              );
+
+              return GestureDetector(
+                onTap: () => _onKanjiTap(result['kanji']),
+                child: Container(
+                  width: 90,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      width: index == 0 ? 2 : 1,
+                      color:
+                          index == 0
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey[300]!,
+                    ),
+                    color:
+                        index == 0
+                            ? Theme.of(context).primaryColor.withOpacity(0.05)
+                            : null,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        result['kanji'],
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$confidence%',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 
@@ -78,7 +175,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
           widget.onSearch(value);
         },
         decoration: InputDecoration(
-          hintText: 'Search word, reading, or meaning...',
+          hintText: 'Үг, утга, дуудлага...',
           prefixIcon: const Icon(Icons.search),
           suffixIcon:
               _searchController.text.isNotEmpty
@@ -109,15 +206,22 @@ class _SearchBarSectionState extends State<SearchBarSection> {
           Expanded(
             child: _buildTabButton(
               icon: Icons.search,
-              label: 'Text Search',
+              label: 'Текст хайлт',
               value: 'search',
             ),
           ),
           Expanded(
             child: _buildTabButton(
               icon: Icons.draw,
-              label: 'Draw Search',
+              label: 'Зурж хайлт',
               value: 'draw',
+            ),
+          ),
+          Expanded(
+            child: _buildTabButton(
+              icon: Icons.camera_alt,
+              label: 'OCR танилт',
+              value: 'ocr',
             ),
           ),
         ],
