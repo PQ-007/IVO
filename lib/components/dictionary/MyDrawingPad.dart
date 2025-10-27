@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:ivo/components/dictionary/MyKanjiRecognizer.dart';
 
 class DrawingPad extends StatefulWidget {
-  const DrawingPad({super.key});
+  final Function(Map<String, dynamic>)? onRecognitionComplete;
+
+  const DrawingPad({super.key, this.onRecognitionComplete});
 
   @override
   State<DrawingPad> createState() => _DrawingPadState();
@@ -12,21 +14,7 @@ class DrawingPad extends StatefulWidget {
 class _DrawingPadState extends State<DrawingPad> {
   List<Offset?> _drawingPoints = [];
   bool _showGrid = true;
-  int _selectedKanjiIndex = 0;
   bool _isProcessing = false;
-
-  final List<Map<String, String>> _sampleKanji = [
-    {'kanji': '日', 'meaning': 'sun, day'},
-    {'kanji': '月', 'meaning': 'moon, month'},
-    {'kanji': '火', 'meaning': 'fire'},
-    {'kanji': '水', 'meaning': 'water'},
-    {'kanji': '木', 'meaning': 'tree, wood'},
-    {'kanji': '金', 'meaning': 'gold, metal'},
-    {'kanji': '土', 'meaning': 'earth, soil'},
-    {'kanji': '人', 'meaning': 'person'},
-    {'kanji': '山', 'meaning': 'mountain'},
-    {'kanji': '川', 'meaning': 'river'},
-  ];
 
   void _onSearch() async {
     if (_drawingPoints.isEmpty) return;
@@ -39,153 +27,30 @@ class _DrawingPadState extends State<DrawingPad> {
       final recognizer = MyKanjiRecognizer();
       await recognizer.loadModel();
 
-      final grayImage = await convertDrawingToGrayscaleImage(_drawingPoints, 64);
+      final grayImage = await convertDrawingToGrayscaleImage(
+        _drawingPoints,
+        64,
+      );
       final result = recognizer.predict(grayImage);
 
       recognizer.close();
 
-      // Show result dialog
-      if (mounted) {
-        _showResultDialog(result);
+      // Notify parent with recognition results
+      if (widget.onRecognitionComplete != null) {
+        widget.onRecognitionComplete!(result);
       }
     } catch (e) {
       print('Error during recognition: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       setState(() {
         _isProcessing = false;
       });
     }
-  }
-
-  void _showResultDialog(Map<String, dynamic> result) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Recognition Result'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Main prediction
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      result['kanji'],
-                      style: const TextStyle(
-                        fontSize: 72,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Index: ${result['index']}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Confidence: ${(result['confidence'] * 100).toStringAsFixed(2)}%',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Top 5 Predictions:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ...List.generate(
-                (result['top5'] as List).length,
-                (index) {
-                  final prediction = result['top5'][index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${index + 1}.',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          prediction['kanji'],
-                          style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Index: ${prediction['index']}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                '${(prediction['confidence'] * 100).toStringAsFixed(2)}%',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _clearDrawing();
-            },
-            child: const Text('Clear & Try Again'),
-          ),
-        ],
-      ),
-    );
   }
 
   void _clearDrawing() {
@@ -220,7 +85,6 @@ class _DrawingPadState extends State<DrawingPad> {
 
     return Column(
       children: [
-        _buildKanjiCarousel(),
         const SizedBox(height: 16),
         AspectRatio(
           aspectRatio: 1.0,
@@ -279,7 +143,7 @@ class _DrawingPadState extends State<DrawingPad> {
                           Icon(Icons.draw_outlined, size: 56),
                           const SizedBox(height: 12),
                           Text(
-                            'Draw a kanji character',
+                            'Хайх ханзаа зурна уу',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -287,7 +151,7 @@ class _DrawingPadState extends State<DrawingPad> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Use the grid as a guide',
+                            'Дөрвөлжинг дүүргэж зураарай!',
                             style: TextStyle(fontSize: 13),
                           ),
                         ],
@@ -303,14 +167,18 @@ class _DrawingPadState extends State<DrawingPad> {
                       children: [
                         _buildActionButton(
                           icon: Icons.refresh,
-                          label: 'Clear',
+                          label: 'Устгах',
                           onPressed: _clearDrawing,
                           isPrimary: false,
                         ),
                         const SizedBox(width: 8),
                         _buildActionButton(
-                          icon: _isProcessing ? Icons.hourglass_empty : Icons.search,
-                          label: _isProcessing ? 'Processing...' : 'Search',
+                          icon:
+                              _isProcessing
+                                  ? Icons.hourglass_empty
+                                  : Icons.search,
+                          label:
+                              _isProcessing ? 'Боловсруулж байна...' : 'Хайх',
                           onPressed: _isProcessing ? null : _onSearch,
                           isPrimary: true,
                         ),
@@ -368,7 +236,7 @@ class _DrawingPadState extends State<DrawingPad> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Tip: Draw strokes in the correct order for better recognition',
+                  'Аль болох удаанаар, хичээж зурвал танилтын хувь нэмэгдэнэ. ',
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -376,60 +244,6 @@ class _DrawingPadState extends State<DrawingPad> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildKanjiCarousel() {
-    return SizedBox(
-      height: 120,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _sampleKanji.length,
-        itemBuilder: (context, index) {
-          final isSelected = index == _selectedKanjiIndex;
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedKanjiIndex = index;
-              });
-            },
-            child: Container(
-              width: 100,
-              margin: const EdgeInsets.only(right: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(width: isSelected ? 2 : 1),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _sampleKanji[index]['kanji']!,
-                    style: const TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      _sampleKanji[index]['meaning']!,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
