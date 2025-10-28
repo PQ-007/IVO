@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/my_navbar.dart';
+import 'package:ivo/components/MyNavbar.dart';
 import 'package:ivo/data/notifiers.dart';
-import 'package:ivo/view/pages/add_page/index.dart';
-import 'package:ivo/view/pages/home_page/index.dart';
-import 'package:ivo/view/pages/library_page/index.dart';
-import 'package:ivo/view/pages/profile_page/index.dart';
-import 'package:ivo/view/pages/stats_page/index.dart';
+import 'package:ivo/view/pages/article-page/index.dart';
+import 'package:ivo/view/pages/dictionary-page/index.dart';
+import 'package:ivo/view/pages/home-page/index.dart';
+import 'package:ivo/view/pages/library-page/index.dart';
+import 'package:ivo/view/pages/pvp-page/index.dart';
 
 List<Widget> pages = [
   HomePage(),
-  StatsPage(),
-  AddPage(),
+  ArticlePage(),
+  DictionaryPage(),
+  PvPPage(),
   LibraryPage(),
-  ProfilePage(),
 ];
 
 class WidgetTree extends StatelessWidget {
