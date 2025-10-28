@@ -37,8 +37,7 @@ class _MySearchbarState extends State<MySearchbar> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+   
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Material(
@@ -77,10 +76,6 @@ class _MySearchbarState extends State<MySearchbar> {
               borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor:
-                isDark
-                    ? Colors.grey[900]
-                    : const Color.fromARGB(71, 129, 189, 226),
           ),
         ),
       ),

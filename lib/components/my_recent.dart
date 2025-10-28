@@ -7,7 +7,6 @@ class MyRecent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       height: 120,
       child: PageView.builder(
@@ -27,10 +26,6 @@ class MyRecent extends StatelessWidget {
               child: SizedBox(
                 child: Card(
                   elevation: 5,
-                  color:
-                      isDark
-                          ? Colors.grey[900]
-                          : const Color.fromARGB(71, 129, 189, 226),
                   child: Container(
                     width: 100,
                     height: 100,
