@@ -4,7 +4,6 @@ import 'package:forui/theme.dart';
 import 'package:ivo/data/notifiers.dart';
 import 'package:ivo/services/auth/auth_gate.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'theme/dark_theme.dart';
 import 'theme/light_theme.dart';
 
