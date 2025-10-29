@@ -90,7 +90,7 @@ class MyKanjiRecognizer {
     final outputShape = outputTensor.shape; // Should be [1, 6507]
     final numClasses = outputShape[1];
 
-    print('Model expects ${numClasses} output classes');
+    print('Model expects $numClasses output classes');
 
     // Prepare output buffer: 2D array [1, num_classes]
     final outputBuffer = List.generate(
