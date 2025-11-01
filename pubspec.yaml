@@ -74,6 +74,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/db/jmdict.db
+    - assets/db/kanji.db
     - assets/ml_models/kanji_model.tflite
     - assets/ml_models/labels.txt 
     - assets/images/
