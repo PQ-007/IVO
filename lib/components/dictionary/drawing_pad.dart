@@ -1,6 +1,6 @@
 // File: lib/components/dictionary/MyDrawingPad.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/dictionary/MyKanjiRecognizer.dart';
+import 'package:ivo/components/dictionary/kanji_recognizer.dart';
 
 class DrawingPad extends StatefulWidget {
   final Function(Map<String, dynamic>)? onRecognitionComplete;

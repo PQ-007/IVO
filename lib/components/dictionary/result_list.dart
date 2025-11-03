@@ -1,8 +1,8 @@
 // File: lib/components/dictionary/dictionary_results_list.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/dictionary/MyEmptyState.dart';
+import 'package:ivo/components/dictionary/empty_state.dart';
 import 'package:ivo/data/models/dictionary_entry.dart';
-import 'package:ivo/components/dictionary/MyResultCard.dart';
+import 'package:ivo/components/dictionary/result_card.dart';
 
 
 class DictionaryResultsList extends StatelessWidget {

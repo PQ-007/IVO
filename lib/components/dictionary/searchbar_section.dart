@@ -1,6 +1,6 @@
 // File: lib/components/dictionary/MySearchbarSection.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/dictionary/MyDrawingPad.dart';
+import 'package:ivo/components/dictionary/drawing_pad.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;

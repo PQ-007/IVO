@@ -1,7 +1,7 @@
 // File: lib/components/dictionary/dictionary_result_card.dart
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:ivo/components/dictionary/MyDetailDialog.dart';
+import 'package:ivo/components/dictionary/detail_dialog.dart';
 import 'package:ivo/data/models/dictionary_entry.dart';
 
 class DictionaryResultCard extends StatelessWidget {
