@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/MyAppbarr.dart';
+import 'package:ivo/components/app_bar.dart';
 
 class ArticlePage extends StatelessWidget {
   const ArticlePage({super.key});

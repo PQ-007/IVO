@@ -1,6 +1,6 @@
 // File: lib/pages/dictionary_page.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/MyAppbarr.dart';
+import 'package:ivo/components/app_bar.dart';
 import 'package:ivo/components/dictionary/result_list.dart';
 import 'package:ivo/components/dictionary/searchbar_section.dart';
 import 'package:ivo/data/dictionary_data.dart';

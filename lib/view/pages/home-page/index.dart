@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/MyAppbarr.dart';
+import 'package:ivo/components/app_bar.dart';
 import 'package:ivo/components/my_recent.dart';
-import 'package:ivo/components/my_searchbar.dart';
+import 'package:ivo/components/search_bar.dart';
 
 
 class HomePage extends StatefulWidget {
