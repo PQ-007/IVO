@@ -1,6 +1,8 @@
 // File: lib/pages/dictionary_page.dart
 import 'package:flutter/material.dart';
 import 'package:ivo/components/app_bar.dart';
+import 'package:ivo/components/buttons/dark_mode_button.dart';
+import 'package:ivo/components/buttons/settings_nav_button.dart';
 import 'package:ivo/components/dictionary/result_list.dart';
 import 'package:ivo/components/dictionary/searchbar_section.dart';
 import 'package:ivo/data/dictionary_data.dart';
@@ -50,10 +52,11 @@ class _DictionaryPageState extends State<DictionaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: MyAppBar(titleText: "Толь бичиг"),
+      appBar: MyAppBar(titleText: "Толь бичиг", button1: DarkModeButton(), button2: SettingsNavButton()),
       body: Column(
         children: [
           SearchBarSection(onSearch: _performSearch),
+          
           Expanded(
             child:
                 _isLoading

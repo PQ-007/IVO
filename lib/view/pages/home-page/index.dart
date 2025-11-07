@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ivo/components/app_bar.dart';
+import 'package:ivo/components/buttons/dark_mode_button.dart';
+import 'package:ivo/components/buttons/settings_nav_button.dart';
 import 'package:ivo/components/my_recent.dart';
 import 'package:ivo/components/search_bar.dart';
 
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(titleText: "Нүүр"),
+      appBar: MyAppBar(titleText: "Нүүр", button1: DarkModeButton(), button2: SettingsNavButton(),),
       body: SingleChildScrollView(
         child: Column(
           children: [

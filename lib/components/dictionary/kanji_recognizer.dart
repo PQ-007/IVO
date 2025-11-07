@@ -241,7 +241,7 @@ Future<img.Image> convertDrawingToGrayscaleImage(
 Future<Map<String, dynamic>> runPrediction(img.Image image) async {
   final recognizer = MyKanjiRecognizer();
   await recognizer.loadModel();
-  final result = await recognizer.predict(image);
+  final result = recognizer.predict(image);
   recognizer.close();
   return result;
 }

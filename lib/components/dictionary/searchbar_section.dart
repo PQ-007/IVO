@@ -1,5 +1,6 @@
 // File: lib/components/dictionary/MySearchbarSection.dart
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:ivo/components/dictionary/drawing_pad.dart';
 
 class SearchBarSection extends StatefulWidget {
@@ -36,53 +37,40 @@ class _SearchBarSectionState extends State<SearchBarSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Search Bar at Top
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-            child: _buildSearchField(),
-          ),
+    return Column(
+      children: [
+        // Search Bar at Top
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          child: _buildSearchField(),
+        ),
+       
+        // Tab Selector Below Search Bar
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _buildTabSelector(),
+        ),
 
-          // Tab Selector Below Search Bar
+        const SizedBox(height: 16),
+
+        // Recognition Results Carousel (shows third type)
+        if (_selectedTab == 'draw' && _recognitionResults.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _buildTabSelector(),
+            child: _buildRecognitionCarousel(),
           ),
 
-          const SizedBox(height: 16),
+        // Spacing when no results
+        if (_selectedTab == 'draw' && _recognitionResults.isEmpty)
+          const SizedBox(height: 140),
 
-          // Recognition Results Carousel (shows third type)
-          if (_selectedTab == 'draw' && _recognitionResults.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildRecognitionCarousel(),
-            ),
-
-          // Spacing when no results
-          if (_selectedTab == 'draw' && _recognitionResults.isEmpty)
-            const SizedBox(height: 140),
-
-          // Content Area (Drawing Pad or Empty Space)
-          if (_selectedTab == 'draw')
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DrawingPad(
-                onRecognitionComplete: _handleRecognitionResult,
-              ),
-            ),
-        ],
-      ),
+        // Content Area (Drawing Pad or Empty Space)
+        if (_selectedTab == 'draw')
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: DrawingPad(onRecognitionComplete: _handleRecognitionResult),
+          ),
+      ],
     );
   }
 
