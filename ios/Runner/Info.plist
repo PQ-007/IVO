@@ -41,6 +41,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+  <!-- Camera and Photo Library Permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>Текст танихын тулд камер ашиглах шаардлагатай</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Зургаас текст танихын тулд зургийн сан ашиглах шаардлагатай</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Зургийг хадгалахын тулд зургийн сан ашиглах шаардлагатай</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

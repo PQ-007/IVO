@@ -3,7 +3,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:forui/theme.dart';
 import 'package:ivo/data/notifiers.dart';
 import 'package:ivo/services/auth/auth_gate.dart';
-import 'package:ivo/services/db_helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'theme/dark_theme.dart';
 import 'theme/light_theme.dart';
@@ -16,11 +15,10 @@ void main() async {
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   print('Initializing database...');
-  await JishoDB.init();
-  print('Database initialized!\n');
+ 
   runApp(const MyApp());
 }
-
+ 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

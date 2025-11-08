@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:ivo/components/app_bar.dart';
 import 'package:ivo/components/buttons/dark_mode_button.dart';
 import 'package:ivo/components/buttons/settings_nav_button.dart';
-import 'package:ivo/components/dictionary/result_list.dart';
+import 'package:ivo/components/dictionary/ocr_scanner.dart';
 import 'package:ivo/components/dictionary/searchbar_section.dart';
-import 'package:ivo/data/dictionary_data.dart';
-import 'package:ivo/data/models/dictionary_entry.dart';
+import 'package:ivo/components/dictionary/result_list.dart';
+import 'package:ivo/components/dictionary/drawing_pad.dart';
+import 'package:ivo/services/db_helper.dart';
 
 class DictionaryPage extends StatefulWidget {
   const DictionaryPage({super.key});
@@ -16,55 +17,176 @@ class DictionaryPage extends StatefulWidget {
 }
 
 class _DictionaryPageState extends State<DictionaryPage> {
-  List<DictionaryEntry> _searchResults = [];
+  String _selectedTab = 'search';
+  String _searchQuery = '';
+  List<Map<String, dynamic>> _searchResults = [];
+  String _resultType = 'empty';
   bool _isLoading = false;
+  List<Map<String, dynamic>> _recognitionResults = [];
 
   @override
   void initState() {
     super.initState();
-    _searchResults = DictionaryData.entries;
+    _initializeDatabase();
   }
 
-  void _performSearch(String query) {
+  Future<void> _initializeDatabase() async {
+    try {
+      await JishoDB.init();
+      print('Database initialized successfully');
+    } catch (e) {
+      print('Error initializing database: $e');
+    }
+  }
+
+  void _onTabChanged(String tab) {
     setState(() {
+      _selectedTab = tab;
+    });
+  }
+
+  Future<void> _performSearch(String query) async {
+    setState(() {
+      _searchQuery = query;
       _isLoading = true;
     });
 
-    // Simulate search delay
-    Future.delayed(const Duration(milliseconds: 300), () {
+    try {
+      if (query.trim().isEmpty) {
+        setState(() {
+          _searchResults = [];
+          _resultType = 'empty';
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final result = await JishoDB.search(query);
       setState(() {
-        if (query.isEmpty) {
-          _searchResults = DictionaryData.entries;
-        } else {
-          _searchResults =
-              DictionaryData.entries.where((entry) {
-                return entry.word.toLowerCase().contains(query.toLowerCase()) ||
-                    entry.reading.toLowerCase().contains(query.toLowerCase()) ||
-                    entry.meaning.toLowerCase().contains(query.toLowerCase());
-              }).toList();
-        }
+        _resultType = result['type'];
+        _searchResults = List<Map<String, dynamic>>.from(result['result'] ?? []);
         _isLoading = false;
       });
+    } catch (e) {
+      print('Search error: $e');
+      setState(() {
+        _searchResults = [];
+        _resultType = 'error';
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _handleRecognitionResult(Map<String, dynamic> result) {
+    setState(() {
+      _recognitionResults = result['top5'] as List<Map<String, dynamic>>;
     });
+  }
+
+  void _onKanjiTap(String kanji) {
+    _performSearch(kanji);
+    setState(() {
+      _selectedTab = 'search';
+    });
+  }
+
+  void _onOcrResult(String text) {
+    if (text.isNotEmpty) {
+      _performSearch(text);
+      setState(() {
+        _selectedTab = 'search';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: MyAppBar(titleText: "Толь бичиг", button1: DarkModeButton(), button2: SettingsNavButton()),
+      appBar: MyAppBar(
+        titleText: "Толь бичиг",
+        button1: DarkModeButton(),
+        button2: SettingsNavButton(),
+      ),
       body: Column(
         children: [
-          SearchBarSection(onSearch: _performSearch),
-          
+          // Search Bar at Top
+          SearchBarSection(
+            onSearch: _performSearch,
+            selectedTab: _selectedTab,
+            onTabChanged: _onTabChanged,
+            recognitionResults: _recognitionResults,
+            onKanjiTap: _onKanjiTap,
+          ),
+
+          // Content Area
           Expanded(
-            child:
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : DictionaryResultsList(results: _searchResults),
+            child: _buildTabContent(),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildTabContent() {
+    switch (_selectedTab) {
+      case 'search':
+        if (_isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (_searchResults.isEmpty && _searchQuery.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                const SizedBox(height: 16),
+                Text(
+                  'Үр дүн олдсонгүй',
+                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          );
+        }
+        if (_searchResults.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.book_outlined, size: 64, color: Colors.grey[400]),
+                const SizedBox(height: 16),
+                Text(
+                  'Хайлт хийнэ үү',
+                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          );
+        }
+        return DictionaryResultsList(
+          results: _searchResults,
+          resultType: _resultType,
+        );
+
+      case 'draw':
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: DrawingPad(
+            onRecognitionComplete: _handleRecognitionResult,
+          ),
+        );
+
+      case 'ocr':
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: OcrScanner(
+            onTextRecognized: _onOcrResult,
+          ),
+        );
+
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
