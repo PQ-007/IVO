@@ -47,20 +47,18 @@ class DictionaryResultsList extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildKanjiSection(
-                'Зүрхэн тоо',
-                [kanji['stroke_count']?.toString() ?? 'N/A'],
-                Icons.brush,
-              ),
+              _buildKanjiSection('Зурлагын тоо', [
+                kanji['stroke_count']?.toString() ?? 'N/A',
+              ], Icons.brush),
               const Divider(height: 32),
               _buildKanjiSection(
-                'Он уншилт',
+                'Он дуудлага',
                 List<String>.from(kanji['on_yomi'] ?? []),
                 Icons.volume_up,
               ),
               const Divider(height: 32),
               _buildKanjiSection(
-                'Кун уншилт',
+                'Күн дуудлага',
                 List<String>.from(kanji['kun_yomi'] ?? []),
                 Icons.speaker_notes,
               ),
@@ -105,20 +103,21 @@ class DictionaryResultsList extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: items.map((item) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue[200]!),
-                ),
-                child: Text(
-                  item,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              );
-            }).toList(),
+            children:
+                items.map((item) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue[200]!),
+                    ),
+                    child: Text(item, style: const TextStyle(fontSize: 14)),
+                  );
+                }).toList(),
           ),
       ],
     );
@@ -156,14 +155,11 @@ class DictionaryResultsList extends StatelessWidget {
                 if (reading.isNotEmpty)
                   Text(
                     '【${reading.first}】',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[700],
-                    ),
+                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                   ),
               ],
             ),
-            
+
             // Show additional forms if available
             if (kanji.length > 1 || reading.length > 1)
               Padding(
@@ -173,17 +169,33 @@ class DictionaryResultsList extends StatelessWidget {
                   runSpacing: 4,
                   children: [
                     if (kanji.length > 1)
-                      ...kanji.skip(1).map((k) => Chip(
-                            label: Text(k, style: const TextStyle(fontSize: 12)),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero,
-                          )),
+                      ...kanji
+                          .skip(1)
+                          .map(
+                            (k) => Chip(
+                              label: Text(
+                                k,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
                     if (reading.length > 1)
-                      ...reading.skip(1).map((r) => Chip(
-                            label: Text(r, style: const TextStyle(fontSize: 12)),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero,
-                          )),
+                      ...reading
+                          .skip(1)
+                          .map(
+                            (r) => Chip(
+                              label: Text(
+                                r,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
                   ],
                 ),
               ),

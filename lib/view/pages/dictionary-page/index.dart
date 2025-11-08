@@ -49,6 +49,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
     setState(() {
       _searchQuery = query;
       _isLoading = true;
+      _selectedTab = "search";
     });
 
     try {
@@ -64,7 +65,9 @@ class _DictionaryPageState extends State<DictionaryPage> {
       final result = await JishoDB.search(query);
       setState(() {
         _resultType = result['type'];
-        _searchResults = List<Map<String, dynamic>>.from(result['result'] ?? []);
+        _searchResults = List<Map<String, dynamic>>.from(
+          result['result'] ?? [],
+        );
         _isLoading = false;
       });
     } catch (e) {
@@ -84,10 +87,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
   }
 
   void _onKanjiTap(String kanji) {
-    _performSearch(kanji);
-    setState(() {
-      _selectedTab = 'search';
-    });
+    
   }
 
   void _onOcrResult(String text) {
@@ -120,9 +120,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
           ),
 
           // Content Area
-          Expanded(
-            child: _buildTabContent(),
-          ),
+          Expanded(child: _buildTabContent()),
         ],
       ),
     );
@@ -172,17 +170,13 @@ class _DictionaryPageState extends State<DictionaryPage> {
       case 'draw':
         return Padding(
           padding: const EdgeInsets.all(16.0),
-          child: DrawingPad(
-            onRecognitionComplete: _handleRecognitionResult,
-          ),
+          child: DrawingPad(onRecognitionComplete: _handleRecognitionResult),
         );
 
       case 'ocr':
         return Padding(
           padding: const EdgeInsets.all(16.0),
-          child: OcrScanner(
-            onTextRecognized: _onOcrResult,
-          ),
+          child: OcrScanner(onTextRecognized: _onOcrResult),
         );
 
       default:

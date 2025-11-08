@@ -1,5 +1,6 @@
 // File: lib/components/dictionary/searchbar_section.dart
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;
@@ -175,7 +176,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
         children: [
           Expanded(
             child: _buildTabButton(
-              icon: Icons.search,
+              icon: FIcons.origami,
               label: 'Үр дүн',
               value: 'search',
             ),
@@ -183,13 +184,13 @@ class _SearchBarSectionState extends State<SearchBarSection> {
           Expanded(
             child: _buildTabButton(
               icon: Icons.draw,
-              label: 'Зурах',
+              label: 'Зурж хайх',
               value: 'draw',
             ),
           ),
           Expanded(
             child: _buildTabButton(
-              icon: Icons.camera_alt,
+              icon: FIcons.scanSearch,
               label: 'OCR',
               value: 'ocr',
             ),
