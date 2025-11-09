@@ -14,10 +14,11 @@ void main() async {
   final supabaseUrl = dotenv.env['SUPABASE_URL']!;
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-
+  print('Initializing database...');
+ 
   runApp(const MyApp());
 }
-
+ 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -40,3 +41,20 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+  
+  
+
+//   // Test various search types
+//   await testSearch('食べる');      // Japanese hiragana/kanji
+//   await testSearch('bushi');      // Romaji → hiragana
+//   await testSearch('to eat');         // English
+//   await testSearch('家');          // Single kanj
+//   await testSearch('ありがとう');   // Hiragana phrase
+//   await testSearch('深層学習');       // English word
+  
+//   print('\n✅ All tests complete!');
+// }
+

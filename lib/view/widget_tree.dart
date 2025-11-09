@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/MyNavbar.dart';
+import 'package:ivo/components/common/nav_bar.dart';
 import 'package:ivo/data/notifiers.dart';
 import 'package:ivo/view/pages/article-page/index.dart';
 import 'package:ivo/view/pages/dictionary-page/index.dart';
@@ -21,7 +21,9 @@ class WidgetTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: ValueListenableBuilder(
+
         valueListenable: selectedPageNotifier,
         builder: (context, value, child) {
           return pages.elementAt(value);

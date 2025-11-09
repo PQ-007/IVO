@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/MyAppbarr.dart';
+import 'package:ivo/components/common/app_bar.dart';
+import 'package:ivo/components/buttons/dark_mode_button.dart';
+import 'package:ivo/components/buttons/settings_nav_button.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -7,7 +9,11 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(titleText: "Profile"),
+      appBar: MyAppBar(
+        titleText: "Profile",
+        button1: DarkModeButton(),
+        button2: SettingsNavButton(),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
