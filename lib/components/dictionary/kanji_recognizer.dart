@@ -22,8 +22,6 @@ class MyKanjiRecognizer {
         'assets/ml_models/labels.txt',
       );
 
-      print('Raw label file length: ${labelString.length} characters');
-
       // Split by newline and filter out empty lines
       labels =
           labelString
@@ -31,8 +29,6 @@ class MyKanjiRecognizer {
               .map((line) => line.trim())
               .where((line) => line.isNotEmpty)
               .toList();
-
-      print('Loaded ${labels.length} labels from labels.txt');
 
       if (labels.length < 6507) {
         print('WARNING: Expected 6507 labels but only found ${labels.length}');
@@ -119,16 +115,16 @@ class MyKanjiRecognizer {
     }
     topPredictions.sort((a, b) => b.value.compareTo(a.value));
 
-    print('Top 5 predictions:');
-    List<Map<String, dynamic>> top5 = [];
-    for (int i = 0; i < 5 && i < topPredictions.length; i++) {
+    print('Top 10 predictions:');
+    List<Map<String, dynamic>> top10 = [];
+    for (int i = 0; i < 10 && i < topPredictions.length; i++) {
       final idx = topPredictions[i].key;
       final conf = topPredictions[i].value;
       final label = idx < labels.length ? labels[idx] : 'Unknown';
       print(
         '  ${i + 1}. Index: $idx, Kanji: $label - ${(conf * 100).toStringAsFixed(2)}%',
       );
-      top5.add({'index': idx, 'kanji': label, 'confidence': conf});
+      top10.add({'index': idx, 'kanji': label, 'confidence': conf});
     }
 
     // Get the predicted kanji
@@ -144,7 +140,7 @@ class MyKanjiRecognizer {
       'index': predIndex,
       'kanji': predictedKanji,
       'confidence': maxVal,
-      'top5': top5,
+      'top10': top10,
     };
   }
 

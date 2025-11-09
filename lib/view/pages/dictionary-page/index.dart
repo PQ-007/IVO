@@ -1,12 +1,13 @@
 // File: lib/pages/dictionary_page.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/app_bar.dart';
+import 'package:ivo/components/common/app_bar.dart';
 import 'package:ivo/components/buttons/dark_mode_button.dart';
 import 'package:ivo/components/buttons/settings_nav_button.dart';
 import 'package:ivo/components/dictionary/ocr_scanner.dart';
-import 'package:ivo/components/dictionary/searchbar_section.dart';
 import 'package:ivo/components/dictionary/result_list.dart';
-import 'package:ivo/components/dictionary/drawing_pad.dart';
+import 'package:ivo/components/dictionary/search_bar.dart';
+import 'package:ivo/components/dictionary/drawing_keyboard.dart';
+import 'package:ivo/components/dictionary/empty_state.dart';
 import 'package:ivo/services/db_helper.dart';
 
 class DictionaryPage extends StatefulWidget {
@@ -17,17 +18,32 @@ class DictionaryPage extends StatefulWidget {
 }
 
 class _DictionaryPageState extends State<DictionaryPage> {
-  String _selectedTab = 'search';
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool isKeyboardOpen(BuildContext context) {
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    return bottomInsets != 0.0;
+  }
+
   String _searchQuery = '';
   List<Map<String, dynamic>> _searchResults = [];
   String _resultType = 'empty';
   bool _isLoading = false;
+  bool _showDrawPad = false;
   List<Map<String, dynamic>> _recognitionResults = [];
+  bool _showOcrScanner = false;
 
   @override
   void initState() {
     super.initState();
     _initializeDatabase();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _initializeDatabase() async {
@@ -39,21 +55,36 @@ class _DictionaryPageState extends State<DictionaryPage> {
     }
   }
 
-  void _onTabChanged(String tab) {
+  void _toggleDrawPad() {
+    // 1. Unfocus the search bar to dismiss the system keyboard
+    // This is the key change to ensure the system keyboard closes.
+    if (_showDrawPad) {
+      // If closing the drawing pad, let the focus go back to the search bar
+      // if the user tapped the text field previously.
+      _searchFocusNode.requestFocus();
+    } else {
+      // If opening the drawing pad, dismiss the system keyboard.
+      _searchFocusNode.unfocus();
+    }
     setState(() {
-      _selectedTab = tab;
+      _showDrawPad = !_showDrawPad;
+      if (!_showDrawPad) {
+        _recognitionResults = [];
+      }
     });
   }
 
-  Future<void> _performSearch(String query) async {
+  Future<void> _performSearch([String? query]) async {
+    final searchText = query ?? _searchController.text;
+
     setState(() {
-      _searchQuery = query;
+      _showDrawPad = false;
+      _searchQuery = searchText;
       _isLoading = true;
-      _selectedTab = "search";
     });
 
     try {
-      if (query.trim().isEmpty) {
+      if (searchText.trim().isEmpty) {
         setState(() {
           _searchResults = [];
           _resultType = 'empty';
@@ -62,7 +93,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
         return;
       }
 
-      final result = await JishoDB.search(query);
+      final result = await JishoDB.search(searchText);
       setState(() {
         _resultType = result['type'];
         _searchResults = List<Map<String, dynamic>>.from(
@@ -80,107 +111,189 @@ class _DictionaryPageState extends State<DictionaryPage> {
     }
   }
 
+  // OCR mentioned
   void _handleRecognitionResult(Map<String, dynamic> result) {
     setState(() {
-      _recognitionResults = result['top5'] as List<Map<String, dynamic>>;
+      _recognitionResults = result['top10'] as List<Map<String, dynamic>>;
     });
   }
 
   void _onKanjiTap(String kanji) {
-    
+    _searchController.text = _searchController.text + kanji;
   }
 
   void _onOcrResult(String text) {
     if (text.isNotEmpty) {
+      _searchController.text = text;
       _performSearch(text);
       setState(() {
-        _selectedTab = 'search';
+        _showOcrScanner = false;
       });
     }
   }
 
+  void _clearDrawPad() {
+    setState(() {
+      _recognitionResults = [];
+    });
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchResults = [];
+      _resultType = 'empty';
+    });
+  }
+
+  void _openOcrScanner() {
+    setState(() {
+      _showOcrScanner = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_showOcrScanner) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              setState(() {
+                _showOcrScanner = false;
+              });
+            },
+          ),
+          title: const Text('Зураг таних'),
+        ),
+        body: OcrScanner(onTextRecognized: _onOcrResult),
+      );
+    }
+
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: MyAppBar(
         titleText: "Толь бичиг",
         button1: DarkModeButton(),
         button2: SettingsNavButton(),
       ),
-      body: Column(
-        children: [
-          // Search Bar at Top
-          SearchBarSection(
-            onSearch: _performSearch,
-            selectedTab: _selectedTab,
-            onTabChanged: _onTabChanged,
-            recognitionResults: _recognitionResults,
-            onKanjiTap: _onKanjiTap,
-          ),
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                // Search Bar Component
+                DictionarySearchBar(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  onSearch: _performSearch,
+                  onClear: _clearSearch,
+                  onOpenOcr: _openOcrScanner,
+                ),
 
-          // Content Area
-          Expanded(child: _buildTabContent()),
-        ],
+                // Results Section
+                Expanded(child: _buildResults()),
+              ],
+            ),
+
+            // Drawing Keyboard Component (MediaQuery.of(context).viewInsets.bottom prevents keyboard push)
+            if (_showDrawPad)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: IgnorePointer(
+                  ignoring: MediaQuery.of(context).viewInsets.bottom > 0,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    transform: Matrix4.translationValues(
+                      0,
+                      MediaQuery.of(context).viewInsets.bottom > 0
+                          ? MediaQuery.of(context).size.height
+                          : 0,
+                      0,
+                    ),
+                    child: DrawingKeyboard(
+                      recognitionResults: _recognitionResults,
+                      onRecognitionComplete: _handleRecognitionResult,
+                      onKanjiTap: _onKanjiTap,
+                      onClear: _clearDrawPad,
+                      onClose: _toggleDrawPad,
+                    ),
+                  ),
+                ),
+              ),
+
+            // Floating action button
+            if (!_showDrawPad)
+              Positioned(
+                right: 16,
+                bottom: 16,
+                child: InkWell(
+                  onTap: _toggleDrawPad,
+                  customBorder:
+                      const CircleBorder(), // Optional: for a circular ripple effect
+                  child: Container(
+                    width:
+                        48, // Standard FAB size is ~56, mini is ~40. Choose your size.
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        // Optional: Add shadow to mimic elevation
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.draw,
+                        color: Colors.white, // Set icon color
+                        size: 24, // Set icon size
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTabContent() {
-    switch (_selectedTab) {
-      case 'search':
-        if (_isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (_searchResults.isEmpty && _searchQuery.isNotEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-                const SizedBox(height: 16),
-                Text(
-                  'Үр дүн олдсонгүй',
-                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          );
-        }
-        if (_searchResults.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.book_outlined, size: 64, color: Colors.grey[400]),
-                const SizedBox(height: 16),
-                Text(
-                  'Хайлт хийнэ үү',
-                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          );
-        }
-        return DictionaryResultsList(
-          results: _searchResults,
-          resultType: _resultType,
-        );
-
-      case 'draw':
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: DrawingPad(onRecognitionComplete: _handleRecognitionResult),
-        );
-
-      case 'ocr':
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: OcrScanner(onTextRecognized: _onOcrResult),
-        );
-
-      default:
-        return const SizedBox.shrink();
+  Widget _buildResults() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
     }
+
+    if (_searchResults.isEmpty && _searchQuery.isNotEmpty) {
+      return EmptyState(
+        icon: Icons.search_off,
+        title: 'Үр дүн олдсонгүй',
+        subtitle: '"$_searchQuery"',
+      );
+    }
+
+    if (_searchResults.isEmpty) {
+      return const EmptyState(
+        icon: Icons.book_outlined,
+        title: 'Хайлт хийнэ үү',
+        subtitle: 'Зурж хайхыг оролдоно уу',
+      );
+    }
+
+    return DictionaryResultsList(
+      results: _searchResults,
+      resultType: _resultType,
+    );
   }
 }

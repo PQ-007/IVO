@@ -4,8 +4,12 @@ import 'package:ivo/components/dictionary/kanji_recognizer.dart';
 
 class DrawingPad extends StatefulWidget {
   final Function(Map<String, dynamic>)? onRecognitionComplete;
-
-  const DrawingPad({super.key, this.onRecognitionComplete});
+  final Function onClear;
+  const DrawingPad({
+    super.key,
+    required this.onClear,
+    this.onRecognitionComplete,
+  });
 
   @override
   State<DrawingPad> createState() => _DrawingPadState();
@@ -219,23 +223,6 @@ class _DrawingPadState extends State<DrawingPad> {
                 ],
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-          child: Row(
-            children: [
-              Icon(Icons.lightbulb_outline, size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Аль болох удаанаар, хичээж зурвал танилтын хувь нэмэгдэнэ.',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ],
           ),
         ),
       ],

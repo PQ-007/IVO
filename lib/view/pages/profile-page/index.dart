@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/components/app_bar.dart';
+import 'package:ivo/components/common/app_bar.dart';
 import 'package:ivo/components/buttons/dark_mode_button.dart';
 import 'package:ivo/components/buttons/settings_nav_button.dart';
 

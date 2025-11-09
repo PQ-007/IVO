@@ -1,6 +1,7 @@
 // File: lib/components/dictionary/searchbar_section.dart
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:ivo/data/notifiers.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;
@@ -51,7 +52,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
         if (widget.selectedTab == 'draw' &&
             widget.recognitionResults.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: _buildRecognitionCarousel(),
           ),
       ],
@@ -63,7 +64,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Text(
             'Танилтын үр дүнгүүд:',
             style: TextStyle(
@@ -92,16 +93,12 @@ class _SearchBarSectionState extends State<SearchBarSection> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      width: index == 0 ? 2 : 1,
+                      width: 1,
                       color:
-                          index == 0
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey[300]!,
+                          isDarkThemeNotifier.value
+                              ? Colors.white
+                              : Colors.black12,
                     ),
-                    color:
-                        index == 0
-                            ? Theme.of(context).primaryColor.withOpacity(0.05)
-                            : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
