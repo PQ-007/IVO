@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/data/notifiers.dart';
-import 'package:ivo/view/pages/tool-page/settings_page.dart'; // Import your SettingsPage
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleText; // Add a field for the title
-
+  final StatelessWidget button1;
+  final StatelessWidget button2;
   const MyAppBar({
     super.key,
+    required this.button1,
+    required this.button2,
     required this.titleText,
   }); // Constructor with titleText
 
@@ -19,30 +20,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       actions: [
-        // Dark mode toggle button
-        IconButton(
-          onPressed: () {
-            // Toggle the dark theme
-            isDarkThemeNotifier.value = !isDarkThemeNotifier.value;
-          },
-          icon: ValueListenableBuilder(
-            valueListenable: isDarkThemeNotifier,
-            builder: (context, isDarkMode, child) {
-              return Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode);
-            },
-          ),
-        ),
+        // Dark mode toggle
+        button1,
+        button2,
+
         // Settings page navigation
-        IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () {
-            // Navigate to the settings page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsPage()),
-            );
-          },
-        ),
       ],
     );
   }

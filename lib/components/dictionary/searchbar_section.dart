@@ -1,11 +1,22 @@
-// File: lib/components/dictionary/MySearchbarSection.dart
+// File: lib/components/dictionary/searchbar_section.dart
 import 'package:flutter/material.dart';
-import 'package:ivo/components/dictionary/drawing_pad.dart';
+import 'package:forui/forui.dart';
 
 class SearchBarSection extends StatefulWidget {
   final Function(String) onSearch;
+  final String selectedTab;
+  final Function(String) onTabChanged;
+  final List<Map<String, dynamic>> recognitionResults;
+  final Function(String) onKanjiTap;
 
-  const SearchBarSection({super.key, required this.onSearch});
+  const SearchBarSection({
+    super.key,
+    required this.onSearch,
+    required this.selectedTab,
+    required this.onTabChanged,
+    required this.recognitionResults,
+    required this.onKanjiTap,
+  });
 
   @override
   State<SearchBarSection> createState() => _SearchBarSectionState();
@@ -13,8 +24,6 @@ class SearchBarSection extends StatefulWidget {
 
 class _SearchBarSectionState extends State<SearchBarSection> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedTab = 'search';
-  List<Map<String, dynamic>> _recognitionResults = [];
 
   @override
   void dispose() {
@@ -22,67 +31,30 @@ class _SearchBarSectionState extends State<SearchBarSection> {
     super.dispose();
   }
 
-  void _handleRecognitionResult(Map<String, dynamic> result) {
-    setState(() {
-      _recognitionResults = result['top5'] as List<Map<String, dynamic>>;
-    });
-  }
-
-  void _onKanjiTap(String kanji) {
-    _searchController.text = _searchController.text + kanji;
-    widget.onSearch(kanji);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Search Bar at Top
+    return Column(
+      children: [
+        // Search Bar at Top
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: _buildSearchField(),
+        ),
+
+        // Tab Selector Below Search Bar
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: _buildTabSelector(),
+        ),
+
+        // Recognition Results Carousel (shows when drawing tab has results)
+        if (widget.selectedTab == 'draw' &&
+            widget.recognitionResults.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-            child: _buildSearchField(),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: _buildRecognitionCarousel(),
           ),
-
-          // Tab Selector Below Search Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _buildTabSelector(),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Recognition Results Carousel (shows third type)
-          if (_selectedTab == 'draw' && _recognitionResults.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _buildRecognitionCarousel(),
-            ),
-
-          // Spacing when no results
-          if (_selectedTab == 'draw' && _recognitionResults.isEmpty)
-            const SizedBox(height: 140),
-
-          // Content Area (Drawing Pad or Empty Space)
-          if (_selectedTab == 'draw')
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: DrawingPad(
-                onRecognitionComplete: _handleRecognitionResult,
-              ),
-            ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -105,15 +77,15 @@ class _SearchBarSectionState extends State<SearchBarSection> {
           height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: _recognitionResults.length,
+            itemCount: widget.recognitionResults.length,
             itemBuilder: (context, index) {
-              final result = _recognitionResults[index];
+              final result = widget.recognitionResults[index];
               final confidence = (result['confidence'] * 100).toStringAsFixed(
                 1,
               );
 
               return GestureDetector(
-                onTap: () => _onKanjiTap(result['kanji']),
+                onTap: () => widget.onKanjiTap(result['kanji']),
                 child: Container(
                   width: 90,
                   margin: const EdgeInsets.only(right: 12),
@@ -157,7 +129,6 @@ class _SearchBarSectionState extends State<SearchBarSection> {
             },
           ),
         ),
-        const SizedBox(height: 16),
       ],
     );
   }
@@ -166,7 +137,7 @@ class _SearchBarSectionState extends State<SearchBarSection> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: TextField(
         controller: _searchController,
@@ -200,27 +171,27 @@ class _SearchBarSectionState extends State<SearchBarSection> {
 
   Widget _buildTabSelector() {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+      padding: const EdgeInsets.all(4),
       child: Row(
         children: [
           Expanded(
             child: _buildTabButton(
-              icon: Icons.search,
-              label: 'Текст хайлт',
+              icon: FIcons.origami,
+              label: 'Үр дүн',
               value: 'search',
             ),
           ),
           Expanded(
             child: _buildTabButton(
               icon: Icons.draw,
-              label: 'Зурж хайлт',
+              label: 'Зурж хайх',
               value: 'draw',
             ),
           ),
           Expanded(
             child: _buildTabButton(
-              icon: Icons.camera_alt,
-              label: 'OCR танилт',
+              icon: FIcons.scanSearch,
+              label: 'OCR',
               value: 'ocr',
             ),
           ),
@@ -234,22 +205,46 @@ class _SearchBarSectionState extends State<SearchBarSection> {
     required String label,
     required String value,
   }) {
-    final isSelected = _selectedTab == value;
+    final isSelected = widget.selectedTab == value;
     return GestureDetector(
-      onTap: () => setState(() => _selectedTab = value),
+      onTap: () => widget.onTabChanged(value),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                  : null,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18),
-            const SizedBox(width: 8),
+            Icon(
+              icon,
+              size: 18,
+              color:
+                  isSelected
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey[600],
+            ),
+            const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color:
+                    isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey[600],
               ),
             ),
           ],

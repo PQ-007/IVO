@@ -85,28 +85,23 @@ class _DrawingPadState extends State<DrawingPad> {
 
     return Column(
       children: [
-        const SizedBox(height: 16),
         AspectRatio(
           aspectRatio: 1.0,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              border: Border.all(
+                width: 1,
+                color: isDark ? Colors.white : Colors.black12,
+              ),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(15),
               child: Stack(
                 children: [
                   if (_showGrid)
                     CustomPaint(
-                      painter: _QuadraticGridPainter(),
+                      painter: _QuadraticGridPainter(isDark: isDark),
                       size: Size.infinite,
                     ),
 
@@ -211,7 +206,7 @@ class _DrawingPadState extends State<DrawingPad> {
                             Icon(Icons.gesture, size: 14),
                             const SizedBox(width: 6),
                             Text(
-                              '${_countStrokes()} strokes',
+                              '${_countStrokes()} зурлага',
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -236,7 +231,7 @@ class _DrawingPadState extends State<DrawingPad> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Аль болох удаанаар, хичээж зурвал танилтын хувь нэмэгдэнэ. ',
+                  'Аль болох удаанаар, хичээж зурвал танилтын хувь нэмэгдэнэ.',
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -291,19 +286,16 @@ class _DrawingPadState extends State<DrawingPad> {
 }
 
 class _QuadraticGridPainter extends CustomPainter {
+  final bool isDark;
+  _QuadraticGridPainter({required this.isDark});
+
   @override
   void paint(Canvas canvas, Size size) {
-    final borderPaint =
-        Paint()
-          ..strokeWidth = 2.5
-          ..style = PaintingStyle.stroke;
-
     final plusPaint =
         Paint()
+          ..color = isDark ? Colors.white12 : Colors.black12
           ..strokeWidth = 1.5
           ..style = PaintingStyle.stroke;
-
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
 
     final centerX = size.width / 2;
     final centerY = size.height / 2;

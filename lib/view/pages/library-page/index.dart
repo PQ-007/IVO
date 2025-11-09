@@ -15,7 +15,7 @@ class LibraryPage extends StatelessWidget {
               initialIndex: 0,
               onPress: (index) {},
               children: const [
-                FTabEntry(label: Text('Нийтлэл'), child: Placeholder()),
+                FTabEntry(label: Text('Нийтлэл'), child: Text("ok")),
                 FTabEntry(label: Text('Флаш карт'), child: Placeholder()),
                 FTabEntry(label: Text('Аудио карт'), child: Placeholder()),
               ],
