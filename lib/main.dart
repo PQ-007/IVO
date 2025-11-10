@@ -42,19 +42,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-  
-  
-
-//   // Test various search types
-//   await testSearch('食べる');      // Japanese hiragana/kanji
-//   await testSearch('bushi');      // Romaji → hiragana
-//   await testSearch('to eat');         // English
-//   await testSearch('家');          // Single kanj
-//   await testSearch('ありがとう');   // Hiragana phrase
-//   await testSearch('深層学習');       // English word
-  
-//   print('\n✅ All tests complete!');
-// }
 
