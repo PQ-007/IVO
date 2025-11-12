@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:ivo/components/buttons/profile_nav_button.dart';
+import 'package:ivo/components/buttons/settings_nav_button.dart';
+import 'package:ivo/components/common/app_bar.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
@@ -8,6 +11,11 @@ class LibraryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: MyAppBar(
+          button1: SettingsNavButton(),
+          button2: ProfileNavButton(),
+          titleText: "Миний сан",
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
