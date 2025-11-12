@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ivo/view/pages/tool-page/settings_page.dart'; // Import your SettingsPage
+import 'package:ivo/view/pages/settings-page/index.dart';
 
 class SettingsNavButton extends StatelessWidget {
   const SettingsNavButton({super.key});
